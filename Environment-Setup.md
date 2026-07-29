@@ -16,7 +16,7 @@ sudo apt update
 sudo apt install -y ca-certificates curl unzip
 ```
 
-![Evidence of system package preparation](./Evidence/system-package-preparation.png)
+![evidence of system package preparation](./evidence/system-package-preparation.png)
 
 ## Tool Installations
 
@@ -58,7 +58,7 @@ Docker provides the container runtime used to start LocalStack.
    Hello from Docker!
    ```
 
-![Evidence of Docker installation](./Evidence/docker-version-and-hello-world.png)
+![evidence of Docker installation](./evidence/docker-version-and-hello-world.png)
 
 ### AWS CLI v2
 
@@ -92,7 +92,7 @@ The AWS CLI is used to send API requests to the local AWS-compatible LocalStack 
    aws-cli/2.x.x Python/3.x.x Linux/x.x.x botocore/2.x.x
    ```
 
-![Evidence of AWS CLI v2 installation](./Evidence/aws-cli-version.png)
+![evidence of AWS CLI v2 installation](./evidence/aws-cli-version.png)
 
 ### kind
 
@@ -126,7 +126,7 @@ kind (Kubernetes IN Docker) creates Kubernetes clusters using Docker containers.
    kind v0.23.0 go1.x.x linux/amd64
    ```
 
-![Evidence of kind installation](./Evidence/kind-version.png)
+![evidence of kind installation](./evidence/kind-version.png)
 
 ### kubectl
 
@@ -162,7 +162,7 @@ kind (Kubernetes IN Docker) creates Kubernetes clusters using Docker containers.
    Kustomize Version: v5.x.x
    ```
 
-![Evidence of kubectl installation](./Evidence/kubectl-version.png)
+![evidence of kubectl installation](./evidence/kubectl-version.png)
 
 ## LocalStack Initialization
 
@@ -193,7 +193,7 @@ xxxxxxxxxxxx   localstack/localstack:3.0   ...   0.0.0.0:4566->4566/tcp
 {"services": { ... }}
 ```
 
-![Evidence of LocalStack running](./Evidence/localstack-container-and-health.png)
+![evidence of LocalStack running](./evidence/localstack-container-and-health.png)
 
 ## AWS CLI Configuration
 
@@ -240,4 +240,4 @@ Expected output resembles:
 }
 ```
 
-![Evidence of AWS CLI LocalStack configuration](./Evidence/aws-cli-localstack-sts.png)
+![evidence of AWS CLI LocalStack configuration](./evidence/aws-cli-localstack-sts.png)
