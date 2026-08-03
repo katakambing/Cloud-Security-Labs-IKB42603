@@ -11,6 +11,7 @@ This repository contains completed laboratory work for IKB42603 Cloud Computing 
 | --- | --- | --- | --- |
 | Lab 0 | Environment Setup | `lab0` | [Open Lab 0](https://github.com/katakambing/Cloud-Security-Labs-IKB42603-Lab-0/tree/lab0) |
 | Lab 1 | Account Security and IAM | `lab1` | [Open Lab 1](https://github.com/katakambing/Cloud-Security-Labs-IKB42603-Lab-0/tree/lab1) |
+| Quiz | Week 2 Quiz | `quiz-w2` | [Open Quiz W2](https://github.com/katakambing/Cloud-Security-Labs-IKB42603-Lab-0/tree/quiz-w2) |
 
 ## Repository Structure
 
@@ -26,6 +27,9 @@ lab1
   Lab1/
     Lab1_Account_Security_and_IAM.md
     Evidence/
+
+quiz-w2
+  QUIZ-W2.md
 ```
 
 Open the relevant submission link above to review a complete lab report and its evidence.
