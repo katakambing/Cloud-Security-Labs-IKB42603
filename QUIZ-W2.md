@@ -1,3 +1,7 @@
+
+<img width="852" height="697" alt="image" src="https://github.com/user-attachments/assets/27562553-4655-4834-92e9-12a7cf7b4e93" />
+
+
 # QUIZ - W2
 
 **Name:** WAN MUHAMMAD NUR IMAN BIN WAN ISMAIL  
