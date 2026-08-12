@@ -9,9 +9,10 @@ This repository contains completed laboratory work for IKB42603 Cloud Computing 
 
 | Lab | Topic | Branch | Submission link |
 | --- | --- | --- | --- |
-| Lab 0 | Environment Setup | `lab0` | [Open Lab 0](https://github.com/katakambing/Cloud-Security-Labs-IKB42603-Lab-0/tree/lab0) |
-| Lab 1 | Account Security and IAM | `lab1` | [Open Lab 1](https://github.com/katakambing/Cloud-Security-Labs-IKB42603-Lab-0/tree/lab1) |
-| Quiz | Week 2 Quiz | `quiz-w2` | [Open Quiz W2](https://github.com/katakambing/Cloud-Security-Labs-IKB42603-Lab-0/tree/quiz-w2) |
+| Lab 0 | Environment Setup | `lab0` | [Open Lab 0](https://github.com/katakambing/Cloud-Security-Labs-IKB42603/tree/lab0) |
+| Lab 1 | Account Security and IAM | `lab1` | [Open Lab 1](https://github.com/katakambing/Cloud-Security-Labs-IKB42603/tree/lab1) |
+| Quiz | Week 2 Quiz | `quiz-w2` | [Open Quiz W2](https://github.com/katakambing/Cloud-Security-Labs-IKB42603/tree/quiz-w2) |
+| Lab 2 | Secure Isolation & Multi-Tenancy | `lab2` | [Open Lab 2](https://github.com/katakambing/Cloud-Security-Labs-IKB42603/tree/lab2) |
 
 ## Repository Structure
 
