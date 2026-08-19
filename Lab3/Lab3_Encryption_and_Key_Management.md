@@ -128,6 +128,8 @@ aws $EP kms encrypt --key-id $KEY_A --plaintext "$(echo -n 'hello' | base64)" \
 
 KMS returned a secure, base64-encoded `CiphertextBlob`.
 
+![KMS Customer Master Key Creation and Direct Encrypt Output](Evidence/04-kms-master-key-envelope.png)
+
 ---
 
 ### Task 5 — Envelope Encryption
@@ -161,7 +163,7 @@ graph TD
     C -->|Stored alongside| D
 ```
 
-![KMS CMK creation, DEK envelope generation, local encryption, and plaintext DEK removal](Evidence/04-kms-master-key-envelope.png)
+![DEK Envelope Encryption Generation, Local Encrypt, and Plaintext Key Purge](Evidence/04-kms-master-key-envelope1.png)
 
 ---
 
