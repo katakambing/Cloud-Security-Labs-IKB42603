@@ -14,6 +14,7 @@ This repository contains completed laboratory work for IKB42603 Cloud Computing 
 | Quiz | Week 2 Quiz | `quiz-w2` | [Open Quiz W2](https://github.com/katakambing/Cloud-Security-Labs-IKB42603/tree/quiz-w2) |
 | Lab 2 | Secure Isolation & Multi-Tenancy | `lab2` | [Open Lab 2](https://github.com/katakambing/Cloud-Security-Labs-IKB42603/tree/lab2) |
 | Lab 3 | Data Protection: Encryption & Key Management | `lab3` | [Open Lab 3](https://github.com/katakambing/Cloud-Security-Labs-IKB42603/tree/lab3) |
+| Lab 4 | Access Control & Network Security | `lab4` | [Open Lab 4](https://github.com/katakambing/Cloud-Security-Labs-IKB42603/tree/lab4) |
 
 ## Repository Structure
 
@@ -41,6 +42,11 @@ lab2
 lab3
   Lab3/
     Lab3_Encryption_and_Key_Management.md
+    Evidence/
+
+lab4
+  Lab4/
+    Lab4_Access_Control_and_Network_Security.md
     Evidence/
 ```
 
