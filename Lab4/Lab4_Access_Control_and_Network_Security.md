@@ -293,9 +293,9 @@ docker inspect hardened --format '{{json .HostConfig.CapDrop}}'
 
 ### Verification Evidence Screenshots:
 
-![Kubernetes RoleBinding Manifest Verification](Evidence/task3-rolebinding.png)
+![Kubernetes RoleBinding Manifest Verification](Evidence/verification-rolebinding-yaml.png)
 
-![Container Dropped Capabilities Verification](Evidence/task6-container-hardening.png)
+![Container Dropped Capabilities Verification](Evidence/verification-capdrop-all.png)
 
 ### Manifest & Output Summary:
 ```yaml
