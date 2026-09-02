@@ -291,7 +291,13 @@ kubectl get rolebinding dev-rb -n app -o yaml
 docker inspect hardened --format '{{json .HostConfig.CapDrop}}'
 ```
 
-### Manifest & Output Evidence:
+### Verification Evidence Screenshots:
+
+![Kubernetes RoleBinding Manifest Verification](Evidence/task3-rolebinding.png)
+
+![Container Dropped Capabilities Verification](Evidence/task6-container-hardening.png)
+
+### Manifest & Output Summary:
 ```yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
