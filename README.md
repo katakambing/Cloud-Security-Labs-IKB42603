@@ -7,11 +7,11 @@ This repository contains completed laboratory work for IKB42603 Cloud Computing 
 
 ## Laboratory Submissions
 
-| Lab | Topic | Branch | Submission link |
+| Item | Topic | Branch | Submission link |
 | --- | --- | --- | --- |
+| Quiz | Week 2 Quiz | `quiz-w2` | [Open Quiz W2](https://github.com/katakambing/Cloud-Security-Labs-IKB42603/tree/quiz-w2) |
 | Lab 0 | Environment Setup | `lab0` | [Open Lab 0](https://github.com/katakambing/Cloud-Security-Labs-IKB42603/tree/lab0) |
 | Lab 1 | Account Security and IAM | `lab1` | [Open Lab 1](https://github.com/katakambing/Cloud-Security-Labs-IKB42603/tree/lab1) |
-| Quiz | Week 2 Quiz | `quiz-w2` | [Open Quiz W2](https://github.com/katakambing/Cloud-Security-Labs-IKB42603/tree/quiz-w2) |
 | Lab 2 | Secure Isolation & Multi-Tenancy | `lab2` | [Open Lab 2](https://github.com/katakambing/Cloud-Security-Labs-IKB42603/tree/lab2) |
 | Lab 3 | Data Protection: Encryption & Key Management | `lab3` | [Open Lab 3](https://github.com/katakambing/Cloud-Security-Labs-IKB42603/tree/lab3) |
 | Lab 4 | Access Control & Network Security | `lab4` | [Open Lab 4](https://github.com/katakambing/Cloud-Security-Labs-IKB42603/tree/lab4) |
@@ -21,6 +21,9 @@ This repository contains completed laboratory work for IKB42603 Cloud Computing 
 Each lab branch contains its report and an `Evidence/` directory with the required screenshots.
 
 ```text
+quiz-w2
+  QUIZ-W2.md
+
 lab0
   week-1/
     Environment-Setup.md
@@ -30,9 +33,6 @@ lab1
   Lab1/
     Lab1_Account_Security_and_IAM.md
     Evidence/
-
-quiz-w2
-  QUIZ-W2.md
 
 lab2
   Lab2/
