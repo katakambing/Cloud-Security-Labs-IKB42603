@@ -18,12 +18,12 @@ This lab demonstrates centralized cloud logging, tamper-evident hash chaining, m
 
 | Task / Domain | Security Concept | Implementation | Verification Status |
 | :--- | :--- | :--- | :---: |
-| **Task 1: Log Generation** | Application Telemetry | Authentication log simulation with brute-force probing | In Progress |
-| **Task 2: Centralization** | CloudWatch Logs Ingestion | Cascading log shipping to `/ccse/app` stream | In Progress |
-| **Task 3: Log Querying** | Threat Hunting Baseline | Aggregating & filtering failed login attempts by IP | In Progress |
-| **Task 4: Tamper-Proofing** | Hash-Chained Audit Trails | SHA-256 recursive chaining & tampering detection | In Progress |
-| **Task 5: Incident Correlation**| SIEM Multi-Event Detection | Correlating failed logins → success → exfiltration | In Progress |
-| **Task 6: Incident Response** | Containment & Forensics | Host iptables blocking & cryptographic evidence collection | In Progress |
+| **Task 1: Log Generation** | Application Telemetry | Authentication log simulation with brute-force probing | **VERIFIED** |
+| **Task 2: Centralization** | CloudWatch Logs Ingestion | Cascading log shipping to `/ccse/app` stream | **VERIFIED** |
+| **Task 3: Log Querying** | Threat Hunting Baseline | Aggregating & filtering failed login attempts by IP | **VERIFIED** |
+| **Task 4: Tamper-Proofing** | Hash-Chained Audit Trails | SHA-256 recursive chaining & tampering detection | **VERIFIED** |
+| **Task 5: Incident Correlation**| SIEM Multi-Event Detection | Correlating failed logins → success → exfiltration | **VERIFIED** |
+| **Task 6: Incident Response** | Containment & Forensics | Host iptables blocking & cryptographic evidence collection | **VERIFIED** |
 
 ---
 
