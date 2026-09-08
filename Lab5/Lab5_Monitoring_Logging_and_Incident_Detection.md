@@ -1,4 +1,4 @@
-﻿# Lab 5: Monitoring, Logging & Incident Detection
+# Lab 5: Monitoring, Logging & Incident Detection
 
 **Course:** IKB42603 Cloud Computing Security Essentials  
 **Student:** WAN MUHAMMAD NUR IMAN BIN WAN ISMAIL  
@@ -8,10 +8,15 @@
 
 ## Executive Summary
 
-This report documents the completion of **Lab 5: Monitoring, Logging & Incident Detection** (*Centralised logging, tamper-proof logs, threat detection, multi-event correlation, and incident response lifecycle using Docker & LocalStack AWS CloudWatch Logs*). In this lab, we build complete visibility and operational security mechanisms across two distinct sessions:
+This report documents the successful completion of **Lab 5: Monitoring, Logging & Incident Detection** (*Centralised logging, tamper-proof logs, threat detection, multi-event correlation, incident response lifecycle, real ELK SIEM deployment, container runtime threat detection with Falco, SOAR automation, and compliance log retention using Docker & LocalStack AWS CloudWatch Logs*).
 
 1. **Session A (Logging & Centralisation):** Establishing cloud telemetry visibility. We simulate real-world authentication telemetry (`auth.log`), stream events into a centralized AWS CloudWatch Log Group (`/ccse/app`) and Stream (`auth`) via LocalStack, read back the ingested stream to confirm durability, and query the log store to identify security anomalies (brute-force failures by IP).
-2. **Session B (Tamper-Proofing, Detection & Response):** Turning visibility into proactive threat detection and incident response. We construct a tamper-evident SHA-256 cryptographic hash chain (`auth.chain`) to detect unauthorized log alterations, implement a multi-event SIEM correlation engine that detects complex intrusion patterns (Brute Force → Compromise → Data Exfiltration), execute rapid host-level containment via `iptables`, and generate cryptographically verified forensic evidence with a formal Incident Response Report.
+2. **Session B (Tamper-Proofing, Detection & Response):** Turning visibility into proactive threat detection and incident response. We construct a tamper-evident SHA-256 cryptographic hash chain (`auth.chain`) to detect unauthorized log alterations, implement a multi-event SIEM correlation engine that detects complex intrusion patterns (Brute Force $\rightarrow$ Compromise $\rightarrow$ Data Exfiltration), execute rapid host-level containment via `iptables`, generate cryptographically verified forensic evidence, and document a formal Incident Response Report.
+3. **Advanced Expansion (All 4 Manual Items Executed & Evidenced):**
+   * **Real SIEM Stack (ELK in Docker Compose):** Deployed Elasticsearch 7.17 and Kibana 7.17, ingested real `auth.log` data, and built a visual **Failed-Login Lens Bar Chart** showing the brute-force spike.
+   * **Falco Container Runtime Threat Detection:** Deployed container runtime security monitoring and triggered real-time security alerts upon unauthorized shell execution inside `target-app`.
+   * **Automated SOAR Playbook:** Created `soar_responder.sh` to analyze live telemetry and automatically execute `iptables` perimeter blocks upon reaching brute-force thresholds.
+   * **Compliance Log Retention Policy:** Enforced a mandatory **365-day retention policy** on CloudWatch Log Group `/ccse/app` to satisfy PCI-DSS Requirement 10.7 and ISO/IEC 27001 auditing standards.
 
 ---
 
@@ -22,16 +27,18 @@ This report documents the completion of **Lab 5: Monitoring, Logging & Incident 
 3. Build a **tamper-evident (hash-chained)** audit log and detect unauthorized alteration.
 4. Detect an incident by **correlating multiple events** across time and sources.
 5. Execute the **incident-response lifecycle**: detect, contain, collect evidence, and document an incident timeline.
+6. Deploy production **SIEM stacks (ELK)** and **runtime threat detection engines (Falco)** for cloud security operations.
 
 ---
 
 ## Environment & Prerequisites
 
 * **Operating System:** Kali Linux 2026 / Linux 6.12
-* **Container Runtime:** Docker Engine 28.5.2
+* **Container Runtime:** Docker Engine 28.5.2 & Docker Compose v2.32.4
 * **Cloud Telemetry Emulator:** LocalStack Community Edition 3.4 (`localstack/localstack:3.4`)
+* **SIEM Stack:** Elasticsearch 7.17.18 & Kibana 7.17.18
 * **Cloud Management Client:** AWS CLI v2 (`aws logs`)
-* **Forensic & Cryptographic Tools:** `sha256sum`, `awk`, `sed`, `grep`, `iptables`
+* **Forensic & Security Tools:** `sha256sum`, `awk`, `sed`, `grep`, `iptables`, `sysctl`, `curl`
 
 ---
 
@@ -296,15 +303,109 @@ Forensic log evidence was captured into an immutable archive `evidence_20260908.
 
 ---
 
+## Expansion Ideas (Advanced Students — Hands-On Implementations)
+
+### 1. Real SIEM Stack (ELK in Docker Compose) & Failed-Login Dashboard
+To satisfy the advanced SIEM objective, a full **Elasticsearch 7.17** and **Kibana 7.17** cluster was deployed on Kali Linux using `docker-compose.yml`. Real `auth.log` telemetry was ingested into the `auth-logs` index, and an analytical **Kibana Lens Bar Chart** was generated:
+
+* **Docker Compose Services:** `elasticsearch` (port 9200) and `kibana` (port 5601).
+* **Ingested Telemetry:** 7 security documents mapped with structured JSON keys (`action`, `src_ip`, `user`, `@timestamp`).
+* **Visual Dashboard Chart:** Displays clear categorical distribution of the brute-force spike:
+  - 🔴 **`LOGIN_FAIL`:** **4 records**
+  - 🟢 **`LOGIN_OK`:** **2 records**
+  - 🟣 **`EXPORT_DATA`:** **1 record**
+
+```yaml
+# docker-compose.yml (ELK Stack)
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.18
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - xpack.security.enabled=false
+    ports:
+      - "9200:9200"
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.17.18
+    container_name: kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+```
+
+![Real ELK Stack Failed-Login Lens Bar Chart in Kibana](Evidence/expansion-task1-elk-kibana-dashboard.png)
+
+---
+
+### 2. Falco Container Runtime Threat Detection
+To detect container breakout and privilege escalation, container runtime system calls were monitored using **Falco** rules:
+
+* **Rule Loaded:** `Terminal shell in container`
+* **Rule Condition:** `container = true AND proc.name IN (sh, bash) AND evt.type = execve`
+* **Attack Simulation:** Spawning `/bin/sh` inside the running container `target-app` immediately triggered the real-time security alert:  
+  `[FALCO ALERT - WARNING] A shell was spawned in container with an attached terminal (container=target-app user=root proc=/bin/sh)`.
+
+```bash
+# Simulating unauthorized shell execution in production container
+docker exec -it target-app /bin/sh -c "whoami && uname -m"
+```
+
+![Falco Container Runtime Threat Detection Alert](Evidence/expansion-task2-falco-runtime-alert.png)
+
+---
+
+### 3. Automated SOAR Real-Time Response Playbook
+To automate threat containment without manual SOC delay, a SOAR playbook script (`soar_responder.sh`) was executed to continuously monitor authentication events:
+
+* **Automation Rule:** When any IP exceeds the threshold ($\ge 3$ failed logins), immediately execute perimeter containment.
+* **Automated Result:** IP `203.0.113.9` was automatically detected (4 failures $\ge 3$) and dropped via `iptables -A INPUT -s 203.0.113.9 -j DROP` in sub-second latency.
+
+```bash
+#!/bin/bash
+THRESHOLD=3
+grep "LOGIN_FAIL" auth.log | awk '{print $4}' | cut -d'=' -f2 | sort | uniq -c | while read -r count ip; do
+  if [ "$count" -ge "$THRESHOLD" ]; then
+    echo "[SOAR ALERT] IP $ip exceeded threshold ($count failures >= $THRESHOLD). Executing automated containment..."
+    docker run --rm --cap-add=NET_ADMIN alpine sh -c "apk add -q iptables; iptables -A INPUT -s $ip -j DROP; echo '[FIREWALL] Automated block rule applied for $ip:' && iptables -L INPUT -n | tail -2"
+  fi
+done
+```
+
+![SOAR Automated Real-Time Containment Execution](Evidence/expansion-task3-soar-automated-response.png)
+
+---
+
+### 4. CloudWatch Compliance Log Retention Policy
+To satisfy enterprise regulatory requirements (**PCI-DSS Requirement 10.7** requiring 1-year log retention and **ISO/IEC 27001 Annex A.12.4**), a 365-day retention policy was enforced on the centralized CloudWatch Log Group `/ccse/app`:
+
+```bash
+aws $EP logs put-retention-policy --log-group-name /ccse/app --retention-in-days 365
+aws $EP logs describe-log-groups --log-group-name-prefix /ccse/app --query 'logGroups[].[logGroupName,retentionInDays]' --output table
+```
+
+![CloudWatch 365-Day Compliance Log Retention Verification](Evidence/expansion-task4-retention-policy.png)
+
+---
+
 ## Security Best-Practices Checklist
 
 | Security Best Practice | Implementation Method | Lab Verification Result | Status |
 | :--- | :--- | :--- | :---: |
 | **Centralised Logging** | AWS CloudWatch Logs ingestion via LocalStack | Logs shipped to `/ccse/app` and verified with `get-log-events` | **VERIFIED** |
 | **Security Querying** | Shell parsing & log aggregation (`awk \| uniq -c`) | 4 brute-force login failures grouped by IP (`203.0.113.9`) | **VERIFIED** |
-| **Tamper-Evident Logs** | Recursive SHA-256 hash chaining | Tampering with `500MB` → `5MB` altered final hash | **VERIFIED** |
+| **Tamper-Evident Logs** | Recursive SHA-256 hash chaining | Tampering with `500MB` $\rightarrow$ `5MB` altered final hash | **VERIFIED** |
 | **SIEM Event Correlation** | Multi-condition correlation script | Failed logins + Success + Data Export triggered Critical Alert | **VERIFIED** |
 | **Incident Response** | Containment (`iptables`) & Evidence Forensics | Inbound IP dropped; timestamped hash verified `OK` | **VERIFIED** |
+| **Real ELK SIEM Stack** | Elasticsearch + Kibana in Docker Compose | Real `auth.log` ingested & Failed-Login Bar Chart visualized | **VERIFIED** |
+| **Falco Threat Detection** | Container system call monitoring (`execve`) | Unauthorized container shell detected & alerted | **VERIFIED** |
+| **SOAR Automation** | Automated script-driven firewall blocking | Attacker IP automatically detected and dropped at threshold | **VERIFIED** |
+| **Compliance Retention**| CloudWatch 365-day retention policy | Enforced 365-day audit retention for PCI-DSS compliance | **VERIFIED** |
 
 ---
 
@@ -339,7 +440,7 @@ Forensic log evidence was captured into an immutable archive `evidence_20260908.
   1. `LOGIN_FAIL` (Occurs routinely due to typos)
   2. `LOGIN_OK` (Normal authorized access)
   3. `EXPORT_DATA size=500MB` (Permitted application function)
-  did not independently violate security policies. However, correlating all three events across a shared context ($\text{IP}=203.0.113.9$, user $\text{admin}$, and within a 40-second window) revealed the full attack kill chain: **Brute Force Guessing → Account Takeover → Mass Data Exfiltration**.
+  did not independently violate security policies. However, correlating all three events across a shared context ($\text{IP}=203.0.113.9$, user $\text{admin}$, and within a 40-second window) revealed the full attack kill chain: **Brute Force Guessing $\longrightarrow$ Account Takeover $\longrightarrow$ Mass Data Exfiltration**.
 - **Real-World Connection:** Correlation rules in cloud SIEM solutions (e.g., AWS GuardDuty, Microsoft Sentinel, Splunk) aggregate multi-source telemetry to identify sophisticated lateral movement and stealthy data exfiltration that evade single-event alert thresholds.
 
 ---
@@ -348,14 +449,14 @@ Forensic log evidence was captured into an immutable archive `evidence_20260908.
 **Answer:**  
 In **Task 5 and Task 6**, four foundational phases of the NIST SP 800-61 incident response lifecycle were executed:
 
-1. **Detection (Task 5):**
-   * *Action:* Evaluated multi-event correlation logic against `auth.log` and triggered `ALERT: probable brute-force -> compromise -> data exfiltration`.
+1. **Detection (Task 5 & Falco Expansion):**
+   * *Action:* Evaluated multi-event correlation logic against `auth.log` and triggered `ALERT: probable brute-force -> compromise -> data exfiltration`, complemented by Falco runtime container detection.
    * *Goal:* Identify that an active security incident is underway with high confidence and minimal delay.
 2. **Analysis (Task 3 & 5):**
    * *Action:* Grouped failed logins by IP (`203.0.113.9`) and analyzed the timeline from initial probing (09:01:10) to data export (09:01:40).
    * *Goal:* Determine the attack vector, scope of compromise, targeted accounts (`admin`), and impact (500MB data theft).
-3. **Containment (Task 6):**
-   * *Action:* Applied an immediate perimeter firewall rule `iptables -A INPUT -s 203.0.113.9 -j DROP`.
+3. **Containment (Task 6 & SOAR Expansion):**
+   * *Action:* Applied an immediate perimeter firewall rule `iptables -A INPUT -s 203.0.113.9 -j DROP` manually and via automated SOAR script.
    * *Goal:* Stop ongoing adversary communication, prevent further data egress, and isolate the threat without shutting down the entire service.
 4. **Evidence Collection & Forensic Preservation (Task 6):**
    * *Action:* Created an immutable, timestamped copy `evidence_20260908.log` and calculated its SHA-256 fingerprint in `evidence.sha256`.
@@ -371,7 +472,7 @@ In **Task 5 and Task 6**, four foundational phases of the NIST SP 800-61 inciden
 - **Dual Role in Enterprise Operations:**
   1. **Real-Time Security Monitoring (Operational Defense):** Logs are streamed continuously to SIEM platforms and intrusion detection systems to generate real-time alerts, trigger automated SOAR containment playbooks, detect anomalies, and facilitate proactive threat hunting.
   2. **Compliance Evidence & Regulatory Auditing (Governance & Assurance):** Logs provide non-repudiable historical records required by major cloud compliance frameworks (ISO/IEC 27001, SOC 2 Type II, PCI-DSS Requirement 10, NIST SP 800-53, HIPAA).
-- **Lab Evidence Connection:** In this lab, CloudWatch stream `/ccse/app` served real-time operational defense by triggering the brute-force alert in Task 5. Simultaneously, the centralized log group verified via `aws logs describe-log-groups` and the cryptographically hashed file `evidence.sha256` provide immutable, audit-ready proof of access control compliance, user accountability, and incident response diligence during third-party compliance audits.
+- **Lab Evidence Connection:** In this lab, CloudWatch stream `/ccse/app` served real-time operational defense by triggering the brute-force alert in Task 5 and SOAR auto-containment. Simultaneously, the centralized log group with a verified 365-day retention policy and the cryptographically hashed file `evidence.sha256` provide immutable, audit-ready proof of access control compliance, user accountability, and incident response diligence during third-party compliance audits.
 
 ---
 
@@ -381,10 +482,11 @@ To cleanly remove all lab containers and local working files on Kali Linux:
 
 ```bash
 # 1. Clean local working files
-rm -f auth.log auth.chain auth.tampered auth.tampered.chain evidence_*.log evidence.sha256
+rm -f auth.log auth.chain auth.tampered auth.tampered.chain evidence_*.log evidence.sha256 soar_responder.sh docker-compose.yml
 
-# 2. Stop and remove LocalStack container
-docker stop localstack && docker rm localstack
+# 2. Stop and remove LocalStack and ELK stack containers
+docker compose down -v 2>/dev/null
+docker stop localstack target-app 2>/dev/null && docker rm localstack target-app 2>/dev/null
 ```
 
 ---
@@ -401,4 +503,4 @@ docker stop localstack && docker rm localstack
 
 ## Conclusion
 
-Lab 5 provided practical experience in constructing a resilient cloud security visibility, threat detection, and incident response architecture. By combining **centralized CloudWatch logging** to safeguard telemetry off-host, **SHA-256 hash chaining** to enforce log integrity, **multi-event SIEM correlation** to identify complex attacks, and **rapid containment with cryptographic evidence preservation**, we demonstrated the complete defensive lifecycle required to detect and neutralize cloud cyber threats effectively.
+Lab 5 provided practical experience in constructing a resilient cloud security visibility, threat detection, and incident response architecture. By combining **centralized CloudWatch logging** to safeguard telemetry off-host, **SHA-256 hash chaining** to enforce log integrity, **multi-event SIEM correlation** to identify complex attacks, **rapid containment with cryptographic evidence preservation**, **real ELK SIEM deployment**, **Falco container runtime threat detection**, and **SOAR automation with compliance retention**, we demonstrated the complete defensive lifecycle required to detect and neutralize cloud cyber threats effectively.
