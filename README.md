@@ -1,59 +1,39 @@
-﻿# IKB42603 Cloud Computing Security Essentials
+﻿# IKB42603 Cloud Computing Security Essentials — Lab 5: Monitoring, Logging & Incident Detection
 
 **Student:** WAN MUHAMMAD NUR IMAN BIN WAN ISMAIL  
 **Student ID:** 52215225039  
+**Branch:** `lab5`  
 
-This repository contains completed laboratory work for IKB42603 Cloud Computing Security Essentials. Each lab is maintained in its own branch with a report and supporting screenshots.
+---
 
-## Laboratory Submissions
+## 📌 Executive Summary
 
-| Item | Topic | Branch | Submission link |
-| --- | --- | --- | --- |
-| Quiz | Week 2 Quiz | `quiz-w2` | [Open Quiz W2](https://github.com/katakambing/Cloud-Security-Labs-IKB42603/tree/quiz-w2) |
-| Lab 0 | Environment Setup | `lab0` | [Open Lab 0](https://github.com/katakambing/Cloud-Security-Labs-IKB42603/tree/lab0) |
-| Lab 1 | Account Security and IAM | `lab1` | [Open Lab 1](https://github.com/katakambing/Cloud-Security-Labs-IKB42603/tree/lab1) |
-| Lab 2 | Secure Isolation & Multi-Tenancy | `lab2` | [Open Lab 2](https://github.com/katakambing/Cloud-Security-Labs-IKB42603/tree/lab2) |
-| Lab 3 | Data Protection: Encryption & Key Management | `lab3` | [Open Lab 3](https://github.com/katakambing/Cloud-Security-Labs-IKB42603/tree/lab3) |
-| Lab 4 | Access Control & Network Security | `lab4` | [Open Lab 4](https://github.com/katakambing/Cloud-Security-Labs-IKB42603/tree/lab4) |
-| Lab 5 | Monitoring, Logging & Incident Detection | `lab5` | [Open Lab 5](https://github.com/katakambing/Cloud-Security-Labs-IKB42603/tree/lab5) |
+This lab demonstrates centralized cloud logging, tamper-evident hash chaining, multi-event threat correlation, and the end-to-end incident response lifecycle (Contain, Collect, Document) using Docker and AWS CloudWatch Logs (via LocalStack).
 
-## Repository Structure
+👉 **[Click here to view the Full Lab Report & Evidence Details](Lab5/Lab5_Monitoring_Logging_and_Incident_Detection.md)**
 
-Each lab branch contains its report and an `Evidence/` directory with the required screenshots.
+---
+
+## 🎯 Key Learning Highlights & Results
+
+| Task / Domain | Security Concept | Implementation | Verification Status |
+| :--- | :--- | :--- | :---: |
+| **Task 1: Log Generation** | Application Telemetry | Authentication log simulation with brute-force probing | In Progress |
+| **Task 2: Centralization** | CloudWatch Logs Ingestion | Cascading log shipping to `/ccse/app` stream | In Progress |
+| **Task 3: Log Querying** | Threat Hunting Baseline | Aggregating & filtering failed login attempts by IP | In Progress |
+| **Task 4: Tamper-Proofing** | Hash-Chained Audit Trails | SHA-256 recursive chaining & tampering detection | In Progress |
+| **Task 5: Incident Correlation**| SIEM Multi-Event Detection | Correlating failed logins → success → exfiltration | In Progress |
+| **Task 6: Incident Response** | Containment & Forensics | Host iptables blocking & cryptographic evidence collection | In Progress |
+
+---
+
+## 📁 Branch Structure
 
 ```text
-quiz-w2
-  QUIZ-W2.md
-
-lab0
-  week-1/
-    Environment-Setup.md
-    Evidence/
-
-lab1
-  Lab1/
-    Lab1_Account_Security_and_IAM.md
-    Evidence/
-
-lab2
-  Lab2/
-    Lab2_Secure_Isolation_and_Multi_Tenancy.md
-    Evidence/
-
-lab3
-  Lab3/
-    Lab3_Encryption_and_Key_Management.md
-    Evidence/
-
-lab4
-  Lab4/
-    Lab4_Access_Control_and_Network_Security.md
-    Evidence/
-
 lab5
   Lab5/
     Lab5_Monitoring_Logging_and_Incident_Detection.md
     Evidence/
 ```
 
-Open the relevant submission link above to review a complete lab report and its evidence.
+🔗 *Return to [Main Landing Page](https://github.com/katakambing/Cloud-Security-Labs-IKB42603)*
