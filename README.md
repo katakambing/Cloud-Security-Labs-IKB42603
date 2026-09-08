@@ -1,4 +1,4 @@
-# IKB42603 Cloud Computing Security Essentials
+﻿# IKB42603 Cloud Computing Security Essentials
 
 **Student:** WAN MUHAMMAD NUR IMAN BIN WAN ISMAIL  
 **Student ID:** 52215225039  
@@ -15,6 +15,7 @@ This repository contains completed laboratory work for IKB42603 Cloud Computing 
 | Lab 2 | Secure Isolation & Multi-Tenancy | `lab2` | [Open Lab 2](https://github.com/katakambing/Cloud-Security-Labs-IKB42603/tree/lab2) |
 | Lab 3 | Data Protection: Encryption & Key Management | `lab3` | [Open Lab 3](https://github.com/katakambing/Cloud-Security-Labs-IKB42603/tree/lab3) |
 | Lab 4 | Access Control & Network Security | `lab4` | [Open Lab 4](https://github.com/katakambing/Cloud-Security-Labs-IKB42603/tree/lab4) |
+| Lab 5 | Monitoring, Logging & Incident Detection | `lab5` | [Open Lab 5](https://github.com/katakambing/Cloud-Security-Labs-IKB42603/tree/lab5) |
 
 ## Repository Structure
 
@@ -47,6 +48,11 @@ lab3
 lab4
   Lab4/
     Lab4_Access_Control_and_Network_Security.md
+    Evidence/
+
+lab5
+  Lab5/
+    Lab5_Monitoring_Logging_and_Incident_Detection.md
     Evidence/
 ```
 
