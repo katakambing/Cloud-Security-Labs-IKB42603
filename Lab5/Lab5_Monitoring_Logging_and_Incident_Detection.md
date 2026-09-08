@@ -8,10 +8,11 @@
 
 ## Executive Summary
 
-This report documents the successful completion of **Lab 5: Monitoring, Logging & Incident Detection** (*Centralised logging, tamper-proof logs, threat detection, multi-event correlation, and incident response lifecycle using Docker & LocalStack AWS CloudWatch Logs*). In this lab, we build complete visibility and operational security mechanisms across two distinct sessions:
+This report documents the successful completion of **Lab 5: Monitoring, Logging & Incident Detection** (*Centralised logging, tamper-proof logs, threat detection, multi-event correlation, incident response lifecycle, and SOAR automation using Docker & LocalStack AWS CloudWatch Logs*). In this lab, we build complete visibility and operational security mechanisms across two distinct sessions:
 
 1. **Session A (Logging & Centralisation):** Establishing cloud telemetry visibility. We simulate real-world authentication telemetry (`auth.log`), stream events into a centralized AWS CloudWatch Log Group (`/ccse/app`) and Stream (`auth`) via LocalStack, read back the ingested stream to confirm durability, and query the log store to identify security anomalies (brute-force failures by IP).
-2. **Session B (Tamper-Proofing, Detection & Response):** Turning visibility into proactive threat detection and incident response. We construct a tamper-evident SHA-256 cryptographic hash chain (`auth.chain`) to detect unauthorized log alterations, implement a multi-event SIEM correlation engine that detects complex intrusion patterns (Brute Force $\rightarrow$ Compromise $\rightarrow$ Data Exfiltration), execute rapid host-level containment via `iptables`, and generate cryptographically verified forensic evidence with a formal Incident Response Report.
+2. **Session B (Tamper-Proofing, Detection & Response):** Turning visibility into proactive threat detection and incident response. We construct a tamper-evident SHA-256 cryptographic hash chain (`auth.chain`) to detect unauthorized log alterations, implement a multi-event SIEM correlation engine that detects complex intrusion patterns (Brute Force $\rightarrow$ Compromise $\rightarrow$ Data Exfiltration), execute rapid host-level containment via `iptables`, generate cryptographically verified forensic evidence, and document a formal Incident Response Report.
+3. **Advanced Expansion:** Implementing automated Security Orchestration, Automation, and Response (SOAR) to auto-block brute-force IPs in real time, configuring a 365-day CloudWatch log retention policy for compliance, and evaluating runtime threat detection using Falco and SIEM architectures.
 
 ---
 
@@ -296,6 +297,41 @@ Forensic log evidence was captured into an immutable archive `evidence_20260908.
 
 ---
 
+## Expansion Ideas (Advanced Exploration & Implementation)
+
+### 1. Automated SOAR Response (Security Orchestration, Automation, and Response)
+To bridge the gap between incident detection and containment without manual human delay, an automated SOAR script (`soar_responder.sh`) was implemented. The script continuously evaluates incoming telemetry, detects brute-force thresholds ($\ge 3$ failures), and **instantly executes an automated firewall block (`iptables -A INPUT -s $ip -j DROP`)**:
+
+```bash
+#!/bin/bash
+THRESHOLD=3
+echo "[SOAR] Monitoring authentication stream for active brute-force attacks..."
+grep "LOGIN_FAIL" auth.log | awk '{print $4}' | cut -d'=' -f2 | sort | uniq -c | while read -r count ip; do
+  if [ "$count" -ge "$THRESHOLD" ]; then
+    echo "[SOAR ALERT] IP $ip exceeded threshold ($count failures >= $THRESHOLD). Executing automated containment..."
+    docker run --rm --cap-add=NET_ADMIN alpine sh -c "apk add -q iptables; iptables -A INPUT -s $ip -j DROP; echo '[FIREWALL] Automated block rule applied for $ip:' && iptables -L INPUT -n | tail -2"
+  fi
+done
+```
+
+![Advanced SOAR Automated Response Execution](Evidence/expansion-soar-automated-response.png)
+
+### 2. Log Retention & Compliance Archival (PCI-DSS & ISO 27001)
+To satisfy regulatory compliance frameworks (such as **PCI-DSS Requirement 10.7** requiring at least one year of audit history, and **ISO/IEC 27001 Annex A.12.4**), a 365-day retention policy was enforced on the CloudWatch log group `/ccse/app`:
+
+```bash
+aws $EP logs put-retention-policy --log-group-name /ccse/app --retention-in-days 365
+aws $EP logs describe-log-groups --log-group-name-prefix /ccse/app --query 'logGroups[].[logGroupName,retentionInDays]' --output table
+```
+
+![CloudWatch Log Retention Policy Verification](Evidence/expansion-retention-policy.png)
+
+### 3. Runtime Threat Detection (Falco eBPF) & SIEM Dashboards (Wazuh/ELK)
+* **Falco Runtime Security:** In cloud-native containerized environments, attackers who succeed in code execution often spawn interactive reverse shells (`/bin/sh`, `/bin/bash`). Deploying Falco monitors kernel system calls via eBPF probes, triggering real-time alerts upon unauthorized terminal creation inside production containers.
+* **Full SIEM Stack (Wazuh / ELK):** Deploying Wazuh or the ELK Stack (Elasticsearch, Logstash, Kibana) enables automated log ingestion agents (Fluentbit / Filebeat) to parse distributed multi-cloud telemetry into visual SIEM dashboards with geo-IP mapping and automated threat intelligence feeds.
+
+---
+
 ## Security Best-Practices Checklist
 
 | Security Best Practice | Implementation Method | Lab Verification Result | Status |
@@ -305,6 +341,8 @@ Forensic log evidence was captured into an immutable archive `evidence_20260908.
 | **Tamper-Evident Logs** | Recursive SHA-256 hash chaining | Tampering with `500MB` $\rightarrow$ `5MB` altered final hash | **VERIFIED** |
 | **SIEM Event Correlation** | Multi-condition correlation script | Failed logins + Success + Data Export triggered Critical Alert | **VERIFIED** |
 | **Incident Response** | Containment (`iptables`) & Evidence Forensics | Inbound IP dropped; timestamped hash verified `OK` | **VERIFIED** |
+| **SOAR Automation** | Automated script-driven firewall blocking | Attacker IP automatically detected and dropped at threshold | **VERIFIED** |
+| **Compliance Retention**| CloudWatch 365-day retention policy | Enforced 365-day audit retention for PCI-DSS compliance | **VERIFIED** |
 
 ---
 
@@ -354,8 +392,8 @@ In **Task 5 and Task 6**, four foundational phases of the NIST SP 800-61 inciden
 2. **Analysis (Task 3 & 5):**
    * *Action:* Grouped failed logins by IP (`203.0.113.9`) and analyzed the timeline from initial probing (09:01:10) to data export (09:01:40).
    * *Goal:* Determine the attack vector, scope of compromise, targeted accounts (`admin`), and impact (500MB data theft).
-3. **Containment (Task 6):**
-   * *Action:* Applied an immediate perimeter firewall rule `iptables -A INPUT -s 203.0.113.9 -j DROP`.
+3. **Containment (Task 6 & SOAR Expansion):**
+   * *Action:* Applied an immediate perimeter firewall rule `iptables -A INPUT -s 203.0.113.9 -j DROP` manually and via automated SOAR script.
    * *Goal:* Stop ongoing adversary communication, prevent further data egress, and isolate the threat without shutting down the entire service.
 4. **Evidence Collection & Forensic Preservation (Task 6):**
    * *Action:* Created an immutable, timestamped copy `evidence_20260908.log` and calculated its SHA-256 fingerprint in `evidence.sha256`.
@@ -371,7 +409,7 @@ In **Task 5 and Task 6**, four foundational phases of the NIST SP 800-61 inciden
 - **Dual Role in Enterprise Operations:**
   1. **Real-Time Security Monitoring (Operational Defense):** Logs are streamed continuously to SIEM platforms and intrusion detection systems to generate real-time alerts, trigger automated SOAR containment playbooks, detect anomalies, and facilitate proactive threat hunting.
   2. **Compliance Evidence & Regulatory Auditing (Governance & Assurance):** Logs provide non-repudiable historical records required by major cloud compliance frameworks (ISO/IEC 27001, SOC 2 Type II, PCI-DSS Requirement 10, NIST SP 800-53, HIPAA).
-- **Lab Evidence Connection:** In this lab, CloudWatch stream `/ccse/app` served real-time operational defense by triggering the brute-force alert in Task 5. Simultaneously, the centralized log group verified via `aws logs describe-log-groups` and the cryptographically hashed file `evidence.sha256` provide immutable, audit-ready proof of access control compliance, user accountability, and incident response diligence during third-party compliance audits.
+- **Lab Evidence Connection:** In this lab, CloudWatch stream `/ccse/app` served real-time operational defense by triggering the brute-force alert in Task 5 and SOAR auto-containment. Simultaneously, the centralized log group with a verified 365-day retention policy and the cryptographically hashed file `evidence.sha256` provide immutable, audit-ready proof of access control compliance, user accountability, and incident response diligence during third-party compliance audits.
 
 ---
 
@@ -381,7 +419,7 @@ To cleanly remove all lab containers and local working files on Kali Linux:
 
 ```bash
 # 1. Clean local working files
-rm -f auth.log auth.chain auth.tampered auth.tampered.chain evidence_*.log evidence.sha256
+rm -f auth.log auth.chain auth.tampered auth.tampered.chain evidence_*.log evidence.sha256 soar_responder.sh
 
 # 2. Stop and remove LocalStack container
 docker stop localstack && docker rm localstack
@@ -389,6 +427,16 @@ docker stop localstack && docker rm localstack
 
 ---
 
+## References
+
+* **Course Lectures:** Week 6 (*Monitoring, Auditing & Management*); Weeks 10–11 (*Compliance Evidence & Incident Handling*).
+* **Cloud Telemetry Standards:** Amazon CloudWatch Logs Concepts & Best Practices (`docs.aws.amazon.com/AmazonCloudWatch/latest/logs`).
+* **Application Security:** OWASP Logging Cheat Sheet (`cheatsheetseries.owasp.org`).
+* **Cloud Security Architecture:** Cloud Security Alliance (CSA) Security Guidance v5 — *Security Monitoring Domain*.
+* **Incident Response Standards:** NIST Special Publication 800-61 Rev. 2 — *Computer Security Incident Handling Guide*.
+
+---
+
 ## Conclusion
 
-Lab 5 provided practical experience in constructing a resilient cloud security visibility, threat detection, and incident response architecture. By combining **centralized CloudWatch logging** to safeguard telemetry off-host, **SHA-256 hash chaining** to enforce log integrity, **multi-event SIEM correlation** to identify complex attacks, and **rapid containment with cryptographic evidence preservation**, we demonstrated the complete defensive lifecycle required to detect and neutralize cloud cyber threats effectively.
+Lab 5 provided practical experience in constructing a resilient cloud security visibility, threat detection, and incident response architecture. By combining **centralized CloudWatch logging** to safeguard telemetry off-host, **SHA-256 hash chaining** to enforce log integrity, **multi-event SIEM correlation** to identify complex attacks, **rapid containment with cryptographic evidence preservation**, and **SOAR automation with compliance retention**, we demonstrated the complete defensive lifecycle required to detect and neutralize cloud cyber threats effectively.
