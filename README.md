@@ -16,6 +16,7 @@ This repository contains completed laboratory work for IKB42603 Cloud Computing 
 | Lab 3 | Data Protection: Encryption & Key Management | `lab3` | [Open Lab 3](https://github.com/katakambing/Cloud-Security-Labs-IKB42603/tree/lab3) |
 | Lab 4 | Access Control & Network Security | `lab4` | [Open Lab 4](https://github.com/katakambing/Cloud-Security-Labs-IKB42603/tree/lab4) |
 | Lab 5 | Monitoring, Logging & Incident Detection | `lab5` | [Open Lab 5](https://github.com/katakambing/Cloud-Security-Labs-IKB42603/tree/lab5) |
+| Lab 6 | Object Storage Security & Data Security Lifecycle | `lab6` | [Open Lab 6](https://github.com/katakambing/Cloud-Security-Labs-IKB42603/tree/lab6) |
 
 ## Repository Structure
 
@@ -53,6 +54,11 @@ lab4
 lab5
   Lab5/
     Lab5_Monitoring_Logging_and_Incident_Detection.md
+    Evidence/
+
+lab6
+  Lab6/
+    Lab6_Object_Storage_Security_and_Data_Lifecycle.md
     Evidence/
 ```
 
