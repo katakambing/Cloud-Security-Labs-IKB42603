@@ -1,65 +1,41 @@
-﻿# IKB42603 Cloud Computing Security Essentials
+﻿# IKB42603 Cloud Computing Security Essentials — Lab 6: Object Storage Security & the Data Security Lifecycle
 
 **Student:** WAN MUHAMMAD NUR IMAN BIN WAN ISMAIL  
 **Student ID:** 52215225039  
+**Branch:** `lab6`  
 
-This repository contains completed laboratory work for IKB42603 Cloud Computing Security Essentials. Each lab is maintained in its own branch with a report and supporting screenshots.
+---
 
-## Laboratory Submissions
+## 📌 Executive Summary
 
-| Item | Topic | Branch | Submission link |
-| --- | --- | --- | --- |
-| Quiz | Week 2 Quiz | `quiz-w2` | [Open Quiz W2](https://github.com/katakambing/Cloud-Security-Labs-IKB42603/tree/quiz-w2) |
-| Lab 0 | Environment Setup | `lab0` | [Open Lab 0](https://github.com/katakambing/Cloud-Security-Labs-IKB42603/tree/lab0) |
-| Lab 1 | Account Security and IAM | `lab1` | [Open Lab 1](https://github.com/katakambing/Cloud-Security-Labs-IKB42603/tree/lab1) |
-| Lab 2 | Secure Isolation & Multi-Tenancy | `lab2` | [Open Lab 2](https://github.com/katakambing/Cloud-Security-Labs-IKB42603/tree/lab2) |
-| Lab 3 | Data Protection: Encryption & Key Management | `lab3` | [Open Lab 3](https://github.com/katakambing/Cloud-Security-Labs-IKB42603/tree/lab3) |
-| Lab 4 | Access Control & Network Security | `lab4` | [Open Lab 4](https://github.com/katakambing/Cloud-Security-Labs-IKB42603/tree/lab4) |
-| Lab 5 | Monitoring, Logging & Incident Detection | `lab5` | [Open Lab 5](https://github.com/katakambing/Cloud-Security-Labs-IKB42603/tree/lab5) |
-| Lab 6 | Object Storage Security & Data Security Lifecycle | `lab6` | [Open Lab 6](https://github.com/katakambing/Cloud-Security-Labs-IKB42603/tree/lab6) |
+This lab demonstrates Amazon S3 object storage security controls, data classification, Block Public Access guardrails, Identity vs Resource-based policy evaluation, SSE-KMS default encryption, presigned URL delegated access, S3 versioning & data remanence, lifecycle retention rules, and cryptographic erasure on LocalStack.
 
-## Repository Structure
+👉 **[Click here to view the Full Lab Report & Evidence Details](Lab6/Lab6_Object_Storage_Security_and_Data_Lifecycle.md)**
 
-Each lab branch contains its report and an `Evidence/` directory with the required screenshots.
+---
+
+## 🎯 Key Learning Highlights & Results
+
+| Task / Domain | Security Concept | Implementation | Verification Status |
+| :--- | :--- | :--- | :---: |
+| **Task 1: Data Classification** | Tagging & Classification | Storing public, internal & confidential objects | In Progress |
+| **Task 2: Archetypal Breach** | Bucket Policy Exposure | Reproducing anonymous leak with `"Principal": "*"` | In Progress |
+| **Task 3: Block Public Access** | Preventative Guardrail | Applying 4 BPA flags and least-privilege policy | In Progress |
+| **Task 4: Policy Precedence** | IAM vs Bucket Policy | Proving explicit Deny overrides IAM Allow | In Progress |
+| **Task 5: Default Encryption** | SSE-KMS at Bucket Scale | KMS customer-managed key default encryption | In Progress |
+| **Task 6: Delegated Access** | Presigned URLs & TLS | Time-bounded access & `aws:SecureTransport` | In Progress |
+| **Task 7: Data Remanence** | S3 Versioning & Deletion | Demonstrating delete marker recovery & per-version purge | In Progress |
+| **Task 8: Retention & Erasure**| Lifecycle Rules & KMS Deletion | Automated archival & cryptographic erasure | In Progress |
+
+---
+
+## 📁 Branch Structure
 
 ```text
-quiz-w2
-  QUIZ-W2.md
-
-lab0
-  week-1/
-    Environment-Setup.md
-    Evidence/
-
-lab1
-  Lab1/
-    Lab1_Account_Security_and_IAM.md
-    Evidence/
-
-lab2
-  Lab2/
-    Lab2_Secure_Isolation_and_Multi_Tenancy.md
-    Evidence/
-
-lab3
-  Lab3/
-    Lab3_Encryption_and_Key_Management.md
-    Evidence/
-
-lab4
-  Lab4/
-    Lab4_Access_Control_and_Network_Security.md
-    Evidence/
-
-lab5
-  Lab5/
-    Lab5_Monitoring_Logging_and_Incident_Detection.md
-    Evidence/
-
 lab6
   Lab6/
     Lab6_Object_Storage_Security_and_Data_Lifecycle.md
     Evidence/
 ```
 
-Open the relevant submission link above to review a complete lab report and its evidence.
+🔗 *Return to [Main Landing Page](https://github.com/katakambing/Cloud-Security-Labs-IKB42603)*
